@@ -15,7 +15,7 @@
     <!-- Google Fonts: Inter, Hind Siliguri, Noto Sans Bengali -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
@@ -519,6 +519,444 @@
             .lang-btn { padding: 5px 13px; font-size: 12px; }
         }
     </style>
+
+    <!-- ==========================================================================
+         10MS DESIGN SYSTEM · SIM KIT SKIN
+         Source: Figma "10ms Design System" (iTPDWiyWYfblQMXVSr9EWv) — Sim kit
+         (Foundations, Components, Shell) + Brand rules.
+         PRESENTATION ONLY. Nothing here touches the simulation script or the
+         canvas drawing code. It loads last and is unlayered, so it wins over
+         the Tailwind utilities that the script swaps in via className.
+         Rules applied: green #149353 is the ONLY action colour · red means
+         "wrong" only (never chrome) · selected = ink, never green · no emoji ·
+         Inter (EN) / Anek Bangla (BN) · numbers in fixed-width tabular boxes ·
+         glass controls on the stage · white dock/panel with pill buttons ·
+         ink toast pills for system messages · borders not shadows.
+    ========================================================================== -->
+    <style id="sim-kit-skin">
+        :root {
+            /* Sim kit tokens (Figma variables) */
+            --color-action-primary: #149353;
+            --color-action-primary-hover: #0F7A45;
+            --color-text-primary: #111827;
+            --color-text-body: #374151;
+            --color-text-secondary: #6B7280;
+            --color-bg-default: #FFFFFF;
+            --color-bg-subtle: #F9FAFB;
+            --color-border-default: #E5E7EB;
+            --color-status-success-fg: #149353;
+            --color-status-success-bg: #EAF6EF;
+            --color-status-success-border: #D0EBDC;
+            --color-status-danger-fg: #DC2626;
+            --color-status-danger-bg: #FEF2F2;
+            --color-status-danger-border: #FEE2E2;
+            --stage-midnight: #0B1024;
+            --stage-glass-bg: rgba(255, 255, 255, 0.80);
+            --stage-glass-border: rgba(17, 24, 39, 0.12);
+            --stage-glass-blur: 24px;
+            --ink: #111827;
+
+            --font-sans: 'Inter', 'Anek Bangla', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+            --font-bangla: 'Anek Bangla', 'Inter', 'Hind Siliguri', system-ui, sans-serif;
+            --font-num: 'Anek Bangla', 'Inter', system-ui, sans-serif;
+
+            /* motion tokens (10MS Motion collection) */
+            --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+            --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+            --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+            --dur-instant: 100ms;
+            --dur-fast: 150ms;
+            --dur-base: 250ms;
+        }
+
+        /* ---------- Page + type ---------- */
+        html, body, button, input, select, textarea { font-family: var(--font-sans); }
+        body { background: var(--color-bg-subtle); color: var(--color-text-primary); }
+        .bn { font-family: var(--font-bangla); letter-spacing: 0; }
+        #app-header h1 {
+            color: var(--color-text-primary);
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            font-size: clamp(20px, 3.4vw, 28px);
+            line-height: 1.3;
+        }
+
+        /* ---------- Header: no red chrome ---------- */
+        #app-header [data-i18n="headerBadge"] {
+            background: var(--gray-100);
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border-default);
+            letter-spacing: 0.04em;
+        }
+        #btn-tutorial {
+            background: var(--color-bg-default);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border-default);
+            box-shadow: none;
+            font-weight: 600;
+            min-height: 36px;
+        }
+        #btn-tutorial:hover { background: var(--color-bg-subtle); border-color: var(--border-strong); }
+        #lang-toggle { background: var(--gray-100); border-color: var(--color-border-default); }
+        .lang-btn { color: var(--color-text-secondary); box-shadow: none; }
+        .lang-btn.active { background: var(--ink); color: #fff; box-shadow: none; }
+
+        /* ---------- Cards: border, not shadow; no red hover ---------- */
+        .card {
+            border-radius: var(--r-lg);
+            border: 1px solid var(--color-border-default);
+            box-shadow: none;
+            background: var(--color-bg-default);
+        }
+        .card:hover { border-color: var(--border-strong); box-shadow: none; transform: none; }
+        #canvas-card-topbar .animate-pulse {
+            animation: none;
+            background: var(--gray-400);   /* nothing idles on the page chrome */
+        }
+        #canvas-card-topbar h2, .card h2 { color: var(--color-text-primary); letter-spacing: -0.1px; }
+        .card h2 [data-i18n="controlsBadge"], h2 [data-i18n="controlsBadge"] {
+            background: var(--gray-100);
+            color: var(--color-text-secondary);
+            border-color: var(--color-border-default);
+        }
+
+        /* ---------- Stage: midnight, glass controls ---------- */
+        #canvas-container {
+            background: var(--stage-midnight);
+            border: 1px solid var(--stage-glass-border);
+            border-radius: var(--r-lg);
+            box-shadow: none;
+        }
+        #canvas-container.wet-alert {
+            box-shadow: inset 0 0 0 2px var(--color-status-danger-fg) !important;   /* red = wrong, no glow */
+        }
+        /* View toggle (glass pill on dark stage, selected = white tag) */
+        #mobile-view-switcher {
+            background: rgba(255, 255, 255, 0.14);
+            -webkit-backdrop-filter: blur(var(--stage-glass-blur));
+            backdrop-filter: blur(var(--stage-glass-blur));
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: var(--r-pill);
+            box-shadow: none;
+            padding: 3px;
+        }
+        #mobile-view-switcher button {
+            background: transparent;
+            border: 1px solid transparent;
+            color: rgba(255, 255, 255, 0.82);
+            border-radius: var(--r-pill);
+            padding: 6px 14px;
+            min-height: 32px;
+            font-weight: 600;
+            transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+        }
+        #mobile-view-switcher button[class*="bg-[#1CAB55]"] { background: #fff; color: var(--ink); }
+
+        /* Frame of reference toggle (segmented, light) */
+        #frame-toggle-group { background: var(--gray-100); border-color: var(--color-border-default); border-radius: var(--r-pill); padding: 3px; }
+        #frame-toggle-group button {
+            border-radius: var(--r-pill);
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--color-text-secondary);
+            box-shadow: none;
+            min-height: 36px;
+            font-weight: 600;
+            transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+        }
+        #frame-toggle-group button[class*="bg-[#1CAB55]"] {
+            background: #fff;
+            color: var(--ink);
+            border-color: var(--color-border-default);
+        }
+
+        /* ---------- Alerts → ink toast pills (no emoji, no flashing) ---------- */
+        #red-alert-panel {
+            background: var(--ink);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--r-pill);
+            padding: 8px 34px 8px 12px;
+            max-width: 280px;
+            align-items: center;
+            font-family: var(--font-sans);
+            animation: none;
+            box-shadow: 0 6px 20px rgba(17, 24, 39, 0.28);
+        }
+        #red-alert-panel.show {
+            align-items: center;
+            animation: alertSlideDown var(--dur-base) var(--ease-enter) forwards;
+        }
+        #red-alert-panel.hide { animation: alertSlideUp var(--dur-fast) var(--ease-exit) forwards; }
+        #red-alert-panel .alert-icon { animation: none; color: #F87171; display: inline-flex; margin-top: 0; }
+        #red-alert-panel .alert-title { text-shadow: none; font-weight: 600; font-size: 12px; letter-spacing: 0; }
+        #red-alert-panel .alert-status-bar { font-weight: 500; font-size: 11px; opacity: 0.8; margin-top: 1px; }
+        #red-alert-panel .alert-dot { display: none; animation: none; }
+        #red-alert-panel .alert-dismiss { top: 50%; transform: translateY(-50%); right: 12px; font-size: 12px; }
+
+        #safe-panel {
+            background: var(--ink);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--r-pill);
+            padding: 8px 14px 8px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(17, 24, 39, 0.28);
+        }
+        #safe-panel .safe-icon { display: inline-flex; color: #4ADE80; }
+
+        /* ---------- Controls (Sim / Slider · Readout · Option · Dock) ---------- */
+        #control-panel-column .card { padding: var(--s-5); }
+        #control-panel-column label { color: var(--color-text-body); font-weight: 600; }
+        /* quantity values: fixed-width tabular readout box, right-aligned, ink */
+        #vm-val, #vr-val, #vw-val {
+            display: inline-block;
+            min-width: 84px;
+            text-align: right;
+            padding: 2px 10px;
+            background: var(--color-bg-subtle);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--r-sm);
+            color: var(--color-text-primary);
+            font-family: var(--font-num);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.4;
+        }
+        /* custom range: 4px track, white thumb with green ring + soft green halo, 44px touch target */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            height: 44px;
+            margin: 0;
+            padding: 0;
+            accent-color: var(--color-action-primary);
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 4px;
+            border-radius: 4px;
+            background: var(--gray-200);
+        }
+        input[type="range"]::-moz-range-track { height: 4px; border-radius: 4px; background: var(--gray-200); }
+        input[type="range"]::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--color-action-primary); }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px; height: 22px;
+            margin-top: -9px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid var(--color-action-primary);
+            box-shadow: 0 1px 2px rgba(17, 24, 39, 0.2);
+            transition: box-shadow var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid var(--color-action-primary);
+            box-shadow: 0 1px 2px rgba(17, 24, 39, 0.2);
+        }
+        input[type="range"]:active::-webkit-slider-thumb { box-shadow: 0 0 0 8px rgba(20, 147, 83, 0.16); transform: scale(1.12); }
+        input[type="range"]:focus-visible { outline: none; box-shadow: none; }
+        input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 6px rgba(20, 147, 83, 0.22); }
+
+        /* umbrella block: neutral panel, number box, status */
+        #control-umbrella-group {
+            background: var(--color-bg-subtle);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--r-md);
+            box-shadow: none;
+        }
+        #control-umbrella-group label { color: var(--color-text-body); }
+        #umb-angle-input {
+            color: var(--color-text-primary);
+            background: #fff;
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--r-sm);
+            font-family: var(--font-num);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+        #umb-angle-input:focus { outline: none; border-color: var(--color-action-primary); box-shadow: 0 0 0 3px rgba(20, 147, 83, 0.18); }
+        #control-umbrella-group span.ml-0\.5 { color: var(--color-text-primary); }
+        #btn-toggle-auto-umb {
+            border-radius: var(--r-pill);
+            border: 1px solid transparent;
+            box-shadow: none;
+            padding: 3px 12px;
+            min-height: 24px;
+            font-weight: 600;
+        }
+        #btn-toggle-auto-umb[class*="bg-[#1CAB55]"] { background: var(--color-action-primary); color: #fff; }
+        #btn-toggle-auto-umb[class*="bg-gray-200"] { background: #fff; color: var(--color-text-body); border-color: var(--color-border-default); }
+        /* status text: success = green with ✓, wrong = red with ✕ (never colour alone) */
+        #umb-status-badge { font-weight: 600; }
+        #umb-status-badge[class*="1CAB55"] { color: var(--color-status-success-fg); }
+        #umb-status-badge[class*="1CAB55"]::before { content: "\2713\00a0"; }
+        #umb-status-badge[class*="E8001D"] { color: var(--color-status-danger-fg); }
+        #umb-status-badge[class*="E8001D"]::before { content: "\2715\00a0"; }
+        #req-angle-hint { color: var(--color-text-secondary); font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+        /* Scenario presets = Sim / Option (selected = ink, never green) */
+        #presets-header, [data-i18n="presetsHeader"] { color: var(--color-text-secondary); letter-spacing: 0.06em; }
+        #control-presets-group button,
+        #problem-buttons-group button {
+            background: #fff;
+            color: var(--color-text-body);
+            border: 1px solid var(--color-border-default);
+            border-radius: var(--r-md);
+            box-shadow: none;
+            min-height: 44px;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 1.3;
+            transition: border-color var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard);
+        }
+        #control-presets-group button:hover,
+        #problem-buttons-group button:hover { background: var(--color-bg-subtle); border-color: var(--border-strong); }
+        #control-presets-group button[class*="bg-[#1CAB55]"],
+        #problem-buttons-group button[class*="bg-[#1CAB55]"] {
+            background: #fff;
+            color: var(--ink);
+            border-color: var(--ink);
+            box-shadow: 0 0 0 1px var(--ink);
+            font-weight: 700;
+        }
+
+        /* ---------- Explanation tabs = Sim / More Sheet tabs (text + green underline) ---------- */
+        #explanation-tabs-group {
+            background: transparent;
+            border: 0;
+            border-bottom: 1px solid var(--color-border-default);
+            border-radius: 0;
+            padding: 0;
+            gap: 4px;
+        }
+        .group-tab {
+            flex: 0 1 auto;
+            background: transparent;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            margin-bottom: -1px;
+            padding: 12px 14px;
+            min-height: 44px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            box-shadow: none;
+        }
+        .group-tab:hover { color: var(--color-text-primary); border-color: transparent; }
+        .group-tab.active {
+            background: transparent;
+            color: var(--color-action-primary);
+            border-bottom-color: var(--color-action-primary);
+            box-shadow: none;
+            font-weight: 700;
+        }
+        @media (min-width: 640px) { .group-tab { padding: 12px 16px; font-size: 14px; } }
+        #content-concepts { color: var(--color-text-body); }
+        #content-concepts strong { color: var(--color-text-primary); }
+        #problem-display { background: var(--color-bg-subtle); border-color: var(--color-border-default); border-radius: var(--r-md); }
+        #problem-display [class*="text-[#931212]"] { color: var(--color-text-primary); }
+        /* hints are never a colour: neutral card */
+        #problem-display [class*="bg-[#FFF5D6]"] {
+            background: #fff;
+            color: var(--color-text-body);
+            border: 1px dashed var(--border-strong);
+        }
+
+        /* ---------- Footer: quiet, no dark marketing band inside a sim ---------- */
+        #app-footer {
+            background: transparent;
+            color: var(--color-text-secondary);
+            border-top: 1px solid var(--color-border-default);
+            border-radius: 0;
+            font-size: 12px;
+        }
+
+        /* ---------- Feedback CTA + modals ---------- */
+        #btn-feedback-cta { border-color: var(--color-border-default); box-shadow: 0 2px 8px rgba(17, 24, 39, 0.10); color: var(--color-text-body); }
+        #feedback-modal-card, #onb-usecase-modal > div, #onb-outcome-modal > div { border-radius: var(--r-lg); box-shadow: 0 12px 32px rgba(17, 24, 39, 0.18); }
+        #onb-desktop-card { border-radius: var(--r-xl); box-shadow: none; }
+        #onb-desktop-canvas-pane { background: var(--stage-midnight); }
+        #onb-usecase-modal [class*="text-[#274FE3]"],
+        #onb-outcome-modal [class*="text-[#E7B946]"] { color: var(--color-text-secondary); }
+        #onb-usecase-continue, #onb-outcome-finish {
+            background: var(--color-action-primary);
+            border: 0;
+            border-radius: var(--r-pill);
+            min-height: 44px;
+            box-shadow: none;
+        }
+        #onb-usecase-continue:hover, #onb-outcome-finish:hover { background: var(--color-action-primary-hover); }
+        #onb-mobile-card { border-radius: var(--r-lg); box-shadow: 0 8px 24px rgba(17, 24, 39, 0.16); }
+        #onb-mobile-header { background: var(--color-bg-subtle); }
+        #onb-mobile-pill { background: var(--ink); border-radius: var(--r-pill); }
+
+        /* ---------- Tour (Sim / Coachmark language: ink ring, white card, green action) ---------- */
+        #tour-spotlight { border: 2px solid #fff; border-radius: var(--r-md); box-shadow: 0 0 0 9999px rgba(11, 16, 36, 0.72); }
+        #tour-card { border-radius: var(--r-lg); box-shadow: 0 8px 28px rgba(17, 24, 39, 0.18); }
+        .tour-step-badge { background: var(--ink); font-weight: 600; }
+        .tour-title { font-weight: 700; }
+        .tour-desc { color: var(--color-text-body); }
+        .tour-progress span.done { background: var(--ink); }
+        .tour-back { border-radius: var(--r-pill); font-weight: 600; padding: 8px 14px; min-height: 36px; }
+        .tour-next {
+            background: var(--color-action-primary);
+            border: 0;
+            border-radius: var(--r-pill);
+            font-weight: 600;
+            padding: 8px 18px;
+            min-height: 36px;
+            box-shadow: none;
+        }
+        .tour-next:hover { background: var(--color-action-primary-hover); }
+        .tour-skip { font-weight: 600; }
+
+        /* ---------- Onboarding: Sim / Option states ---------- */
+        .onb-badge { color: var(--color-text-secondary); letter-spacing: 0.04em; }
+        .onb-question, .onb-instruction { color: var(--color-text-primary); font-weight: 700; }
+        .onb-option-btn { border: 1px solid var(--color-border-default); border-radius: var(--r-md); font-weight: 500; min-height: 44px; transition: border-color var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard); }
+        .onb-option-btn:hover { background: var(--color-bg-subtle); border-color: var(--border-strong); }
+        .onb-option-btn.selected { border: 2px solid var(--ink); background: #fff; padding: 11px 13px; }
+        .onb-option-btn.selected .onb-option-letter { background: var(--ink); color: #fff; }
+        .onb-option-letter { background: var(--gray-100); }
+        .onb-check-btn, .onb-next-btn {
+            background: var(--color-action-primary);
+            border: 0;
+            border-radius: var(--r-pill);
+            min-height: 44px;
+            font-weight: 600;
+        }
+        .onb-check-btn:hover, .onb-next-btn:hover { background: var(--color-action-primary-hover); }
+        .onb-feedback.correct { background: var(--color-status-success-bg); color: var(--color-status-success-fg); border: 1px solid var(--color-status-success-border); }
+        .onb-feedback.correct::before { content: "\2713\00a0"; }
+        .onb-feedback.wrong { background: var(--color-status-danger-bg); color: var(--color-status-danger-fg); border: 1px solid var(--color-status-danger-border); }
+        .onb-feedback.wrong::before { content: "\2715\00a0"; }
+        .onb-compare-item { border: 1px solid var(--color-border-default); border-radius: var(--r-md); }
+        .onb-compare-item.wrong-item { border-color: var(--color-status-danger-border); background: var(--color-status-danger-bg); }
+        .onb-compare-item.correct-item { border-color: var(--color-status-success-border); background: var(--color-status-success-bg); }
+        .onb-readout { background: var(--color-bg-subtle); border: 1px solid var(--color-border-default); font-variant-numeric: tabular-nums; }
+        .onb-readout-bar-fill { background: var(--color-action-primary); }
+        .onb-gallery-card { border: 1px solid var(--color-border-default); border-radius: var(--r-md); }
+        .onb-gallery-card:hover { transform: none; box-shadow: none; border-color: var(--border-strong); }
+        .onb-gallery-card.selected { border: 2px solid var(--ink); background: #fff; box-shadow: none; }
+        .onb-gallery-selected-badge { background: var(--ink); }
+        .onb-glow-pulse { animation: none; }   /* only the Cue Ring may pulse */
+
+        /* ---------- Focus + reduced motion ---------- */
+        button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+            outline: 2px solid var(--color-action-primary);
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
 </head>
 <body class="text-slate-900 bg-gray-50 min-h-screen">
 
@@ -579,7 +1017,7 @@
 
                         <!-- 🚨 RED ALERT — compact overlay inside canvas (top-right) -->
                         <div id="red-alert-panel" role="alert" aria-live="assertive">
-                            <span class="alert-icon">🚨</span>
+                            <span class="alert-icon"><i data-lucide="x-circle" class="w-4 h-4"></i></span>
                             <div class="alert-body">
                                 <div class="alert-title" data-i18n="alertTitle">মানুষটি ভিজছেন!</div>
                                 <div class="alert-status-bar">
@@ -592,7 +1030,7 @@
 
                         <!-- ✅ Safe panel — small, same position -->
                         <div id="safe-panel">
-                            <span>✅</span>
+                            <span class="safe-icon"><i data-lucide="check" class="w-4 h-4"></i></span>
                             <span data-i18n="safePanelText">মানুষটি এখন সুরক্ষিত আছেন!</span>
                         </div>
                     </div>
@@ -665,7 +1103,7 @@
                         <input type="range" id="slider-umb" min="-89" max="89" step="0.1" value="53.1" 
                                class="w-full h-1.5 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-[#E7B946]">
                         <div id="umb-status-hint" class="text-[10px] sm:text-[11px] font-bold mt-1.5 flex items-center justify-between">
-                            <span id="umb-status-badge" class="text-[#1CAB55]">✅ সঠিক কোণ (সুরক্ষিত)</span>
+                            <span id="umb-status-badge" class="text-[#1CAB55]">সঠিক কোণ (সুরক্ষিত)</span>
                             <span id="req-angle-hint" class="text-gray-500 font-semibold">প্রয়োজনীয়: 53.1°</span>
                         </div>
                     </div>
@@ -918,9 +1356,9 @@
             // Dynamic / parameterized strings
             autoLabel:          { bn: 'অটো', en: 'Auto' },
             manualLabel:        { bn: 'ম্যানুয়াল', en: 'Manual' },
-            umbSafe:            { bn: '✅ সঠিক কোণ (সুরক্ষিত)', en: '✅ Correct angle (Safe)' },
-            umbWetWithDiff:     { bn: (d) => `🚨 বৃষ্টিতে ভিজছেন! (বিচ্যুতি: ${d}°)`, en: (d) => `🚨 Wet from the rain! (off by ${d}°)` },
-            umbWetPlain:        { bn: '🚨 বৃষ্টিতে ভিজছেন!', en: '🚨 Wet from the rain!' },
+            umbSafe:            { bn: 'সঠিক কোণ (সুরক্ষিত)', en: 'Correct angle (Safe)' },
+            umbWetWithDiff:     { bn: (d) => `বৃষ্টিতে ভিজছেন! (বিচ্যুতি: ${d}°)`, en: (d) => `Wet from the rain! (off by ${d}°)` },
+            umbWetPlain:        { bn: 'বৃষ্টিতে ভিজছেন!', en: 'Wet from the rain!' },
             requiredAngle:      { bn: (v) => `প্রয়োজনীয়: ${v}°`, en: (v) => `Required: ${v}°` },
             umbrellaAngleReason:{ bn: (a, r) => `ছাতা: ${a}° (প্রয়োজনীয়: ${r}°)`, en: (a, r) => `Umbrella: ${a}° (Required: ${r}°)` },
             dirStraightUp:      { bn: 'উল্লম্বভাবে ধরতে হবে (সোজা উপরে)', en: 'Hold it vertically (straight up)' },
@@ -963,8 +1401,8 @@
             hudWindLabel:    { bn: 'অনুভূমিক বাতাস: ', en: 'Horizontal wind: ' },
             hudWindNone:     { bn: 'নেই', en: 'None' },
             hudSafetyLabel:  { bn: 'অবস্থা: ', en: 'Status: ' },
-            hudSafetyDry:    { bn: '✅ নিরাপদ', en: '✅ Safe' },
-            hudSafetyWet:    { bn: '🚨 ভিজছে', en: '🚨 Wet' },
+            hudSafetyDry:    { bn: 'নিরাপদ', en: 'Safe' },
+            hudSafetyWet:    { bn: 'ভিজছে', en: 'Wet' },
             vecAxisXPos:     { bn: '+x (ডানে)', en: '+x (right)' },
             vecAxisXNeg:     { bn: '-x (বামে)', en: '-x (left)' },
             vecAxisYPos:     { bn: '+y (নিচে)', en: '+y (down)' },
